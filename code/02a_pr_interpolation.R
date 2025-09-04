@@ -23,6 +23,9 @@ file_df_pr_m__inter_csv <- "output/02_interpolation_pr/df_pr_m__inter.csv"
 file_ras_mean_annual_pr__inter <- 
   "output/02_interpolation_pr/raster/ras_mean_annual_pr__inter.tiff"
 
+file_dem_geog = "output/02_interpolation_pr/raster/ras_dem_geog.tiff"
+file_dem_utm = "output/02_interpolation_pr/raster/ras_dem_utm.tiff"
+
 
 #### reading input ####
 df_pr_m <- readRDS(file_pr_m)
@@ -236,3 +239,7 @@ write.csv(df_pr_m__inter, file_df_pr_m__inter_csv)
 writeRaster(ras_inters_mean_annual, 
             file_ras_mean_annual_pr__inter, 
             overwrite = TRUE)
+
+#### writing dem ####
+ras_dem %>% writeRaster(file_dem_geog)
+ras_dem %>% terra::project("EPSG:32718") %>% writeRaster(file_dem_utm)
