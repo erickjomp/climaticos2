@@ -23,8 +23,8 @@ file_df_pr_m__inter_csv <- "output/02_interpolation_pr/df_pr_m__inter.csv"
 file_ras_mean_annual_pr__inter <- 
   "output/02_interpolation_pr/raster/ras_mean_annual_pr__inter.tiff"
 
-file_dem_geog = "output/02_interpolation_pr/raster/ras_dem_geog.tiff"
-file_dem_utm = "output/02_interpolation_pr/raster/ras_dem_utm.tiff"
+file_dem_geog_gen = "output/02_interpolation_pr/raster/topography_dem/ras_dem_geog_%s.tiff"
+file_dem_utm_gen = "output/02_interpolation_pr/raster/topography_dem/ras_dem_utm_%s.tiff"
 
 
 #### reading input ####
@@ -35,20 +35,22 @@ sf_wshed <- st_read(file_wshed_shp)
 #### auxiliar objects ####
 sp_stas_pr__inter <- sf_stas_pr %>% as_Spatial()
 ras_dem0 <- get_elev_raster(sf_stas_pr, #z = 6, 
-                            clip = "bbox",src = "gl3") 
-ras_dem0 <- terra::aggregate(ras_dem0, fact = 24) # 0.02 deg ~ 2.2 km
+                            clip = "bbox",src = "gl3")
 names(ras_dem0) <- "elev"
-ras_dem <- rast(ras_dem0)
+ras_dem <- terra::aggregate(ras_dem0, fact = 24)  # 0.02 deg ~ 2.2 km
+ras_dem0 <- rast(ras_dem0)
+ras_dem <- rast(ras_dem)
 
 # sp_stas_pr_inter <- as_Spatial(sf_stas_pr__inter)
-sp_dem <- as(ras_dem0, "SpatialGridDataFrame")
+# sp_dem <- as(ras_dem, "SpatialGridDataFrame")
+sp_dem <- as(raster::raster(ras_dem), "SpatialGridDataFrame")
 # using sp cause is still faster than sf and stars
 # stars_dem <- stars::st_as_stars(ras_dem0)
 
 plot(ras_dem)
 plot(sf_wshed$geometry, add = T)
 
-elev_avg <- terra::extract(ras_dem, sf_wshed,fun = "mean")[,-1]
+elev_avg <- terra::extract(ras_dem, sf_wshed,fun = mean)#[,-1]
 message("The mean elevation of the watershed is:   " , 
         round(elev_avg, 1), "    masl")
 
@@ -74,7 +76,7 @@ ras_idw <-
   }) %>% do.call(c, .)
 
 values_pr_idw <-
-  extract(ras_idw, sf_wshed, "mean")[, -1] %>% as.numeric()
+  terra::extract(ras_idw, sf_wshed, "mean")[, -1] %>% as.numeric()
 df_pr_idw <- tibble(dates = df_pr_m$dates,
                     IDW = values_pr_idw)
 plot(df_pr_idw, type = "b")
@@ -118,7 +120,7 @@ ras_ok <-
   }) %>% do.call(c, .)
 
 values_pr_ok <-
-  extract(ras_ok, sf_wshed, "mean")[, -1] %>% as.numeric()
+  terra::extract(ras_ok, sf_wshed, "mean")[, -1] %>% as.numeric()
 df_pr_ok <- tibble(dates = df_pr_m$dates,
                    OK = values_pr_ok)
 plot(df_pr_ok, type = "b")
@@ -157,7 +159,7 @@ ras_ied <-
   }) %>% do.call(c, .)
 
 values_pr_ied <-
-  extract(ras_ied, sf_wshed, "mean")[, -1] %>% as.numeric()
+  terra::extract(ras_ied, sf_wshed, "mean")[, -1] %>% as.numeric()
 df_pr_ied <- tibble(dates = df_pr_m$dates,
                     IED = values_pr_ied)
 plot(df_pr_ied, type = "b")
@@ -196,7 +198,7 @@ ras_ked <-
   }) %>% do.call(c, .)
 
 values_pr_ked <-
-  extract(ras_ked, sf_wshed, "mean")[, -1] %>% as.numeric()
+  terra::extract(ras_ked, sf_wshed, "mean")[, -1] %>% as.numeric()
 df_pr_ked <- tibble(dates = df_pr_m$dates,
                     KED = values_pr_ked)
 plot(df_pr_ked, type = "b")
@@ -241,5 +243,10 @@ writeRaster(ras_inters_mean_annual,
             overwrite = TRUE)
 
 #### writing dem ####
-ras_dem %>% writeRaster(file_dem_geog)
-ras_dem %>% terra::project("EPSG:32718") %>% writeRaster(file_dem_utm)
+resol_dem <-  terra::res(ras_dem)[1] %>% round(6) %>% paste0(.,"deg")
+ras_dem %>% writeRaster(sprintf(file_dem_geog_gen,resol_dem))
+ras_dem %>% terra::project("EPSG:32718") %>% writeRaster(sprintf(file_dem_utm_gen,resol_dem))
+
+resol_dem0 <-  terra::res(ras_dem0)[1] %>% round(6) %>% paste0(.,"deg")
+ras_dem0 %>% writeRaster(sprintf(file_dem_geog_gen,resol_dem0))
+ras_dem0 %>% terra::project("EPSG:32718") %>% writeRaster(sprintf(file_dem_utm_gen,resol_dem0))

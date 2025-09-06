@@ -17,6 +17,11 @@ file_plot <-
 ras_inters <- rast(file_rasters_mean_annual_pr)
 sf_wshed <- st_read(file_wshed_shp)
 
+
+#### calculating mean annual precip ####
+ras_inters %>% terra::extract(sf_wshed,fun = "mean")
+
+
 #### processing data ####
 df_ras_methods <- as.data.frame(ras_inters, xy = TRUE)
 df_ras_methods <- df_ras_methods %>%
@@ -64,6 +69,9 @@ breaks = c(-Inf, seq(200, 1000, 100),Inf)
       strip.text.y = element_text(size = base_size_figs * 1.2)
     )
 )
+
+
+
 
 ggsave(plot_ras_methods,
        filename = file_plot,
