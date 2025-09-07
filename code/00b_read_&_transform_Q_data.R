@@ -1,5 +1,6 @@
 library(tidyverse)
-devtools::load_all("~/projects/my_packages/basic_tools/")
+# remotes::install_github("https://github.com/erickjomp/hydromet.git")
+library(BasicTools)
 Sys.setenv(TZ = 'GMT')
 
 #### INPUT ####

@@ -2,7 +2,8 @@ library(tidyverse)
 library(terra)
 library(sf)
 Sys.setenv(TZ = 'GMT')
-devtools::load_all("~/projects/my_packages/basic_tools/")
+# remotes::install_github("https://github.com/erickjomp/hydromet.git")
+library(BasicTools)
 
 #### INPUT ####
 # data netCDF (.nc) downloaded from  
