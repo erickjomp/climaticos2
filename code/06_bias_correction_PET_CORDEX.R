@@ -57,11 +57,12 @@ df_PET_CORDEX %>% group_by(RCM, GCM) %>%
       # climQMBC
       values_BC <- climQMBC::QDM(obs = df_PET__obs$etp,
                                  mod = df_PET_CORDEX_model_sce$PET,
-                                 var = 1,frq = "m")
+                                 mult_change = 1,
+                                 frq = "m")
       
       df_PET_CORDEX_model_sce_BC <- df_PET_CORDEX_model_sce
-      df_PET_CORDEX_model_sce_BC$PET <- values_BC
-      
+      df_PET_CORDEX_model_sce_BC$PET <- values_BC[,1]
+
       list_BC[[sce_rcp]] <- df_PET_CORDEX_model_sce_BC
     }
     # since both are the same hist are same we join#
