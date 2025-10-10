@@ -2,5 +2,5 @@ date_begin_historic_pr,1981-01-01
 date_end_historic_pr,2006-01-01
 date_begin_historic_PET,1981-01-01
 date_end_historic_PET,2006-01-01
-date_begin_ref_future,2031-01-01
-date_end_ref_future,2061-01-01
+date_begin_ref_future,2071-01-01
+date_end_ref_future,2101-01-01
