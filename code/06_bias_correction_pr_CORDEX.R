@@ -3,6 +3,7 @@ library(hyfo)
 library(climQMBC)
 
 Sys.setenv(TZ = 'GMT')
+set.seed(42)
 
 #### INPUT ####
 file_series_pr_CORDEX <-

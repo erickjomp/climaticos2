@@ -4,7 +4,7 @@ library(climQMBC)
 # library(MBC)
 # library(qmap)
 Sys.setenv(TZ = 'GMT')
-
+set.seed(42)
 #### INPUT ####
 file_series_PET_CORDEX <-
   "output/05_selection_CORDEX_series/df_PET_CORDEX_m.rds"
