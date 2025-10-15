@@ -31,10 +31,10 @@ df_periods_analysis <- read.csv(file_periods_analysis,
                                 header = FALSE,
                                 row.names = 1) %>% t() %>% as_tibble()
 
-H_inicio <- as.POSIXct(df_periods_analysis$date_begin_historic,format="%d/%m/%Y")
-H_final <- as.POSIXct(df_periods_analysis$date_end_historic,format="%d/%m/%Y")
-F_inicio <- as.POSIXct(df_periods_analysis$date_begin_ref_future,format="%d/%m/%Y")
-F_final <- as.POSIXct(df_periods_analysis$date_end_ref_future,format="%d/%m/%Y")
+H_inicio <- as.POSIXct(df_periods_analysis$date_begin_historic,format="%Y-%m-%d")
+H_final <- as.POSIXct(df_periods_analysis$date_end_historic,format="%Y-%m-%d")
+F_inicio <- as.POSIXct(df_periods_analysis$date_begin_ref_future,format="%Y-%m-%d")
+F_final <- as.POSIXct(df_periods_analysis$date_end_ref_future,format="%Y-%m-%d")
 
 # %>%   mutate_all(as.POSIXct)
 print(t(df_periods_analysis))
