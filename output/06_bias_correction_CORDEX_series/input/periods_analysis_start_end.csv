@@ -1,4 +1,6 @@
-date_begin_historic,01/01/1981
-date_end_historic,01/01/2006
-date_begin_ref_future,01/01/2006
-date_end_ref_future,01/01/2061
+date_begin_historic,1981-01-01
+date_end_historic,2006-01-01
+date_begin_ref_future,2006-01-01
+date_end_ref_future,2061-01-01
+date_begin_analysis_nearfuture,2031-01-01
+date_end_analysis_nearfuture,2061-01-01
