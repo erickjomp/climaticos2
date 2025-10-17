@@ -33,11 +33,11 @@ print(t(df_periods))
 #### PROCESS ####
 df_Qy <- df_all %>%
   filter((scenario == "historical" & 
-            dates >= df_periods$date_begin_historic_pr &
-            dates < df_periods$date_end_historic_pr) |
+            dates >= df_periods$date_begin_historic &
+            dates < df_periods$date_end_historic) |
            (scenario != "historical" & 
-              dates >= df_periods$date_begin_ref_future &
-              dates < df_periods$date_end_ref_future)) %>% 
+              dates >= df_periods$date_begin_analysis_nearfuture &
+              dates < df_periods$date_end_analysis_nearfuture)) %>% 
   group_by(GCM, source_pr, hmodel, scenario) %>% 
   summarise(mean_Qy = mean(Qm3s) * 12)
 
