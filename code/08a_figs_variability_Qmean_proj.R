@@ -14,6 +14,9 @@ base_size_figs <- 8
 #### OUTPUTS ####
 file_plot_precipmethod_1 <- "output/08_plots_results/fig_variability_dueto_precipestimation_1.pdf"
 file_plot_precipmethod_2 <- "output/08_plots_results/fig_variability_dueto_precipestimation_2.pdf"
+file_plot_precipmethod_2_alt <- "output/08_plots_results/fig_variability_dueto_precipestimation_2_alternative.pdf"
+file_plot_precipmethod_2_alt_rcp45 <- "output/08_plots_results/fig_variability_dueto_precipestimation_2_alternative_RCP45.pdf"
+file_plot_precipmethod_2_alt_rcp85 <- "output/08_plots_results/fig_variability_dueto_precipestimation_2_alternative_RCP85.pdf"
 
 file_plot_hydromodel_1 <- "output/08_plots_results/fig_variability_dueto_hydromodel_1.pdf"
 file_plot_hydromodel_2 <- "output/08_plots_results/fig_variability_dueto_hydromodel_2.pdf"
@@ -167,6 +170,135 @@ df_plot2 %>%
 
 ggsave(filename = file_plot_precipmethod_2,
        width = 190, height = 120, units = "mm")
+
+
+## Plot 2 ALTERNATIVE: fig_variability_dueto_precipestimation_2_alternative (UPPER RIGHT) ##
+## X-axis: hmodel, Facets by GCM ##
+df_plot2_alt <- df_Qy_change45 %>% rbind(df_Qy_change85)
+stats_plot2_alt <- get_facet_stats(df_plot2_alt, c("scenario", "GCM"), "hmodel")
+minmax_plot2_alt <- get_minmax_lines(df_plot2_alt, c("scenario", "GCM"), "hmodel")
+
+df_plot2_alt %>%
+  ggplot(aes(hmodel, Qy_change, color = source_pr)) +   
+  # Vertical line connecting min to max (transparent)
+  geom_segment(data = minmax_plot2_alt, aes(x = hmodel, xend = hmodel, 
+                                            y = min_val, yend = max_val),
+               inherit.aes = FALSE, color = "grey30", linewidth = 0.5, alpha = 0.4) +
+  # Horizontal line at minimum
+  geom_segment(data = minmax_plot2_alt, aes(x = as.numeric(hmodel) - 0.15, xend = as.numeric(hmodel) + 0.15, 
+                                            y = min_val, yend = min_val),
+               inherit.aes = FALSE, color = "grey50", linewidth = 0.5) +
+  # Horizontal line at maximum
+  geom_segment(data = minmax_plot2_alt, aes(x = as.numeric(hmodel) - 0.15, xend = as.numeric(hmodel) + 0.15, 
+                                            y = max_val, yend = max_val),
+               inherit.aes = FALSE, color = "grey50", linewidth = 0.5) +
+  geom_point(size = 1) +
+  geom_text(data = stats_plot2_alt, 
+            aes(x = Inf, y = -Inf, label = label),
+            inherit.aes = FALSE,
+            hjust = 1.05, vjust = -0.3,
+            size = 1.8, fontface = "bold",
+            color = "black") +
+  facet_grid(scenario ~ GCM, scales = "free_y") +
+  labs(y = "Mean annual runoff change (%)", 
+       x = "Hydrological model",
+       color = "Precipitation estimation method") + 
+  my_ggtheme(base_size = base_size_figs) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+        legend.position = "top",
+        legend.background = element_rect(color = "black", fill = "white", linewidth = 0.5),
+        legend.key = element_rect(fill = "white", color = NA)) +
+  guides(fill = guide_legend(nrow = 1, byrow = TRUE))
+
+ggsave(filename = file_plot_precipmethod_2_alt,
+       width = 380, height = 120, units = "mm")
+
+
+## Plot 2 ALTERNATIVE RCP 4.5:
+df_plot2_alt_rcp45 <- df_Qy_change45
+stats_plot2_alt_rcp45 <- get_facet_stats(df_plot2_alt_rcp45, c("GCM"), "hmodel")
+minmax_plot2_alt_rcp45 <- get_minmax_lines(df_plot2_alt_rcp45, c("GCM"), "hmodel")
+
+df_plot2_alt_rcp45 %>%
+  ggplot(aes(hmodel, Qy_change, color = source_pr)) +   
+  # Vertical line connecting min to max (transparent)
+  geom_segment(data = minmax_plot2_alt_rcp45, aes(x = hmodel, xend = hmodel, 
+                                                  y = min_val, yend = max_val),
+               inherit.aes = FALSE, color = "grey30", linewidth = 0.5, alpha = 0.4) +
+  # Horizontal line at minimum
+  geom_segment(data = minmax_plot2_alt_rcp45, aes(x = as.numeric(hmodel) - 0.15, xend = as.numeric(hmodel) + 0.15, 
+                                                  y = min_val, yend = min_val),
+               inherit.aes = FALSE, color = "grey50", linewidth = 0.7) +
+  # Horizontal line at maximum
+  geom_segment(data = minmax_plot2_alt_rcp45, aes(x = as.numeric(hmodel) - 0.15, xend = as.numeric(hmodel) + 0.15, 
+                                                  y = max_val, yend = max_val),
+               inherit.aes = FALSE, color = "grey50", linewidth = 0.7) +
+  geom_point(size = 1) +
+  geom_text(data = stats_plot2_alt_rcp45, 
+            aes(x = Inf, y = -Inf, label = label),
+            inherit.aes = FALSE,
+            hjust = 1.05, vjust = -0.3,
+            size = 1.5, fontface = "bold",
+            color = "black") +
+  facet_wrap(~ GCM, nrow = 2, scales = "free_y") +
+  labs(y = "Mean annual runoff change (%)", 
+       x = "Hydrological model",
+       color = "Precipitation estimation method",
+       title = "RCP 4.5") + 
+  my_ggtheme(base_size = base_size_figs) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+        legend.position = "top",
+        legend.background = element_rect(color = "black", fill = "white", linewidth = 0.5),
+        legend.key = element_rect(fill = "white", color = NA),
+        plot.title = element_text(hjust = 0.5, face = "bold")) +
+  guides(fill = guide_legend(nrow = 1, byrow = TRUE))
+
+ggsave(filename = file_plot_precipmethod_2_alt_rcp45,
+       width = 250, height = 120, units = "mm")
+
+## Plot 2 ALTERNATIVE RCP 8.5:
+df_plot2_alt_rcp85 <- df_Qy_change85
+stats_plot2_alt_rcp85 <- get_facet_stats(df_plot2_alt_rcp85, c("GCM"), "hmodel")
+minmax_plot2_alt_rcp85 <- get_minmax_lines(df_plot2_alt_rcp85, c("GCM"), "hmodel")
+
+df_plot2_alt_rcp85 %>%
+  ggplot(aes(hmodel, Qy_change, color = source_pr)) +   
+  # Vertical line connecting min to max (transparent)
+  geom_segment(data = minmax_plot2_alt_rcp85, aes(x = hmodel, xend = hmodel, 
+                                                  y = min_val, yend = max_val),
+               inherit.aes = FALSE, color = "grey30", linewidth = 0.5, alpha = 0.4) +
+  # Horizontal line at minimum
+  geom_segment(data = minmax_plot2_alt_rcp85, aes(x = as.numeric(hmodel) - 0.15, xend = as.numeric(hmodel) + 0.15, 
+                                                  y = min_val, yend = min_val),
+               inherit.aes = FALSE, color = "grey50", linewidth = 0.7) +
+  # Horizontal line at maximum
+  geom_segment(data = minmax_plot2_alt_rcp85, aes(x = as.numeric(hmodel) - 0.15, xend = as.numeric(hmodel) + 0.15, 
+                                                  y = max_val, yend = max_val),
+               inherit.aes = FALSE, color = "grey50", linewidth = 0.7) +
+  geom_point(size = 1) +
+  geom_text(data = stats_plot2_alt_rcp85, 
+            aes(x = Inf, y = -Inf, label = label),
+            inherit.aes = FALSE,
+            hjust = 1.05, vjust = -0.3,
+            size = 1.5, fontface = "bold",
+            color = "black") +
+  facet_wrap(~ GCM, nrow = 2, scales = "free_y") +
+  labs(y = "Mean annual runoff change (%)", 
+       x = "Hydrological model",
+       color = "Precipitation estimation method",
+       title = "RCP 8.5") + 
+  my_ggtheme(base_size = base_size_figs) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+        legend.position = "top",
+        legend.background = element_rect(color = "black", fill = "white", linewidth = 0.5),
+        legend.key = element_rect(fill = "white", color = NA),
+        plot.title = element_text(hjust = 0.5, face = "bold")) +
+  guides(fill = guide_legend(nrow = 1, byrow = TRUE))
+
+ggsave(filename = file_plot_precipmethod_2_alt_rcp85,
+       width = 250, height = 120, units = "mm")
+
+
 
 #### PLOTS HYDROLOGICAL MODEL VARIABILITY ####
 
