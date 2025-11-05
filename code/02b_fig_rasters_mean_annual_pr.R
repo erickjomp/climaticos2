@@ -12,6 +12,7 @@ file_rasters_mean_annual_pr <-
 file_wshed_shp <- "data/watersheds/shp/pativilca_watershed.shp"
 file_raster_mean_annual_pr_pisco <- 
   "output/00_processed_data/raster/ras_avg_prannual__pisco.tiff"
+file_stas_shp <- "output/00_processed_data/shp/sf_stas_pr.shp"
 
 #### OUTPUT ####
 file_plot <- 
@@ -22,7 +23,7 @@ file_plot <-
 ras_inters <- rast(file_rasters_mean_annual_pr)
 sf_wshed <- st_read(file_wshed_shp)
 ras_pisco <- rast(file_raster_mean_annual_pr_pisco)
-
+sf_stas <- st_read(file_stas_shp)
 
 #### calculating mean annual precip ####
 areal_pr_value_inters <- ras_inters %>% terra::extract(sf_wshed,fun = "mean",) %>% .[,-1] %>% 
@@ -86,6 +87,7 @@ df_ann <- data.frame(
     # coord_cartesian() + 
     
     geom_sf(data = sf_wshed, fill = NA, colour = "black", linewidth = 0.5) +
+    geom_sf(data = sf_stas, color = "black") +
     labs(x = NULL, y = NULL, fill = "Mean Annual\nPrecipitation (mm)") +
     
     coord_sf(xlim = c(xmin,xmax), ylim = c(ymin,ymax)) +
