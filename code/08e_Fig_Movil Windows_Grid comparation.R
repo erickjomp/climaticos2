@@ -182,3 +182,4 @@ graph <- ggplot() +
 ggsave(ruta, plot = graph, width = 12, height = 12, dpi = 500) # Activar para RCP 8.5
 
 
+
