@@ -19,6 +19,8 @@ file_plot_precipmethod_2_alt_rcp45 <- "output/08_plots_results/fig_variability_d
 file_plot_hydromodel_1 <- "output/08_plots_results/fig_variability_dueto_hydromodel_1_RCP45.pdf"
 file_plot_hydromodel_2 <- "output/08_plots_results/fig_variability_dueto_hydromodel_2_RCP45.pdf"
 
+file_plot_combined <- "output/08_plots_results/fig_combined_three_panels_rcp45.pdf"
+
 #### READING ####
 df_GR2M <-  readRDS(file_GR2M) %>% mutate(hmodel = "GR2M")
 df_HyMod <- readRDS(file_HyMod) %>% mutate(hmodel = "HyMod")
@@ -130,7 +132,7 @@ df_plot2 <- df_Qy_change45
 stats_plot2 <- get_facet_stats(df_plot2, c("hmodel"), "GCM")
 minmax_plot2 <- get_minmax_lines(df_plot2, c("hmodel"), "GCM")
 
-df_plot2 %>%
+p3 <- df_plot2 %>%
   ggplot(aes(GCM, Qy_change, color = source_pr)) +   
   # Vertical line connecting min to max (transparent)
   geom_segment(data = minmax_plot2, aes(x = GCM, xend = GCM, 
@@ -248,7 +250,7 @@ df_plot3 <- df_Qy_change45
 stats_plot3 <- get_facet_stats(df_plot3, c("source_pr"), "hmodel")
 minmax_plot3 <- get_minmax_lines(df_plot3, c("source_pr"), "hmodel")
 
-df_plot3 %>%
+p1 <- df_plot3 %>%
   ggplot(aes(hmodel, Qy_change, color = GCM)) +   
   # Vertical line connecting min to max (transparent)
   geom_segment(data = minmax_plot3, aes(x = hmodel, xend = hmodel, 
@@ -291,7 +293,7 @@ df_plot4 <- df_Qy_change45
 stats_plot4 <- get_facet_stats(df_plot4, c("source_pr"), "GCM")
 minmax_plot4 <- get_minmax_lines(df_plot4, c("source_pr"), "GCM")
 
-df_plot4 %>%
+p2 <- df_plot4 %>%
   ggplot(aes(GCM, Qy_change, color = hmodel)) +   
   # Vertical line connecting min to max (transparent)
   geom_segment(data = minmax_plot4, aes(x = GCM, xend = GCM, 
@@ -327,3 +329,14 @@ df_plot4 %>%
 
 ggsave(filename = file_plot_hydromodel_2,
        width = 190, height = 120, units = "mm")
+
+#### COMBINE PLOTS ####
+combined_plot <- plot_grid(p1, p2, p3, 
+                           ncol = 1, 
+                           rel_heights = c(1, 1, 1),
+                           align = "v")
+
+#### SAVE COMBINED PLOT IN A4 FORMAT ####
+ggsave(filename = file_plot_combined,
+       plot = combined_plot,
+       width = 190, height = 297, units = "mm")
