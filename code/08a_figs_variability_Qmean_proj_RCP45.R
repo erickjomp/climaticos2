@@ -1,6 +1,7 @@
 library(tidyverse)
 remotes::install_github("https://github.com/erickjomp/Rthemes.git")
 library(Rthemes)
+library(cowplot)
 
 #### INPUTS ####
 file_GR2M <- "output/07_Q_projections/df_Q_GR2M_proj.rds"

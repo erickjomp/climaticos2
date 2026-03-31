@@ -90,7 +90,7 @@ lapply(names_source_pr, function(name_source_pr){
                                Param = Param, FUN = RunModel_GR2M)
       df_Qm3s_sim <- df_pr_CORDEX_BC_model_sce %>% rename(Qm3s = pr)
       df_Qm3s_sim <- df_Qm3s_sim %>% 
-        mutate(Qm3s = OutputsModel$Qsim[-ind_ext_warmup] / 
+        mutate(Qm3s = OutputsModel$Qsim/ 
                  (lubridate::days_in_month(dates) * 24*60*60) * 
                  (area_km2 * 1000 * 1000) / 1000)
       list_results_scens[[sce_rcp]] <- df_Qm3s_sim

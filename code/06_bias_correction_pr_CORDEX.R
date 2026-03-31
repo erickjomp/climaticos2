@@ -82,7 +82,7 @@ for (source_pr in names(df_pr_all)[-1]){
         
         # ClimQMBC
         values_BC <- climQMBC::DQM(obs=df_pr_obs$pr,mod=df_pr_CORDEX_model_sce$pr,mult_change=1,allow_negatives=0,frq = "m")
-        
+        values_BC <- values_BC[,1]
         df_pr_CORDEX_model_sce_BC <- df_pr_CORDEX_model_sce
         df_pr_CORDEX_model_sce_BC$pr <- values_BC
         

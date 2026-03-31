@@ -68,6 +68,7 @@ df_PET_CORDEX_BC <-
       
       # climQMBC
       values_BC <- climQMBC::DQM(obs=df_PET_obs$etp,mod=df_PET_CORDEX_model_sce$PET,mult_change=1,allow_negatives=0,frq = "m")
+      values_BC <- values_BC[,1]
       
       df_PET_CORDEX_model_sce_BC <- df_PET_CORDEX_model_sce
       df_PET_CORDEX_model_sce_BC$PET <- values_BC

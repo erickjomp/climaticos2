@@ -4,7 +4,7 @@ library(sf)
 Sys.setenv(TZ = 'GMT')
 
 #### INPUT ####
-file_pisco_pr_m <- "~/projects/global_data/PISCO/pr_monthly/data.nc"
+file_pisco_pr_m <- "~/projects/global_data/PISCO/pr_monthly_stable/data.nc"
 file_wshed__shp <- "data/watersheds/shp/pativilca_watershed.shp"
 
 #### OUTPUT ####
