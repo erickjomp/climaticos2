@@ -5,7 +5,7 @@ hbv_model <- function(pr,
                       param_soil_module = c(200, 0.8, 1.15),
                       param_routing_module = c(0.9, 0.01, 0.001, 0.5, 0.01), 
                       routing_model = 1, 
-                      init_cond_routing = c(0,0,0)) {
+                      init_cond_routing = c(0,0,0),extra_output = FALSE) {
   
   soil_module <-
     Soil_HBV(
@@ -30,8 +30,12 @@ hbv_model <- function(pr,
     UH(model = 1,
        Qg = routing_module[, "Qg"],
        param = c(1))
+  if (!extra_output){
+    return(tf_module)
+  } else {
+    cbind(soil_module,routing_module,Qsim = tf_module)
+  }
   
-  return(tf_module)
 }
 
 hbv_model_tooptim <- function(param,pr, pet, routing_model = 1, 
